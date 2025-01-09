@@ -1,10 +1,9 @@
 package org.example.rabbitmqtest.service;
 
-import org.example.rabbitmqtest.config.RabbitMQConfig;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class MessageProducer {
@@ -12,11 +11,23 @@ public class MessageProducer {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private RabbitMQConfig rabbitMQConfig;
+    public void sendOrderMessage(String message) {
+        rabbitTemplate.convertAndSend("ecommerceExchange", "order.created", message);
+        System.out.println("Sent Order Message: " + message);
+    }
 
-    public void sendMessage(String message) {
-        rabbitTemplate.convertAndSend(rabbitMQConfig.myQueue().getName(), message);
-        System.out.println("Sent: " + message);
+    public void sendPaymentMessage(String message) {
+        rabbitTemplate.convertAndSend("ecommerceExchange", "payment.processed", message);
+        System.out.println("Sent Payment Message: " + message);
+    }
+
+    public void sendNotificationMessage(String message) {
+        rabbitTemplate.convertAndSend("ecommerceExchange", "notification.sent", message);
+        System.out.println("Sent Notification Message: " + message);
+    }
+
+    public void sendShippingMessage(String message) {
+        rabbitTemplate.convertAndSend("ecommerceExchange", "shipping.processed", message);
+        System.out.println("Sent Shipping Message: " + message);
     }
 }
